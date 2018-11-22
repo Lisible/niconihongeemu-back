@@ -1,14 +1,14 @@
-version: 3.0.0
-
+swagger: "2.0"
 info:
   title: NicoNihonGeemu API
   description: A REST API for managing NicoNihonGeemu decks and access dictionnary definitions
   version: 0.1.0
 
 paths:
-  /getToken?login="{loginParam}"&pass="{passParam}":
+  /accessToken?login="{loginParam}"&pass="{passParam}":
     get:
       summary: Returns an access token to the API
+      operationId: getAccessToken
       parameters:
         - login: loginParam
           in: path
@@ -37,6 +37,7 @@ paths:
   /user:
     post:
       summary: Register a new user
+      operationId: registerUser
       content:
         application/json:
           schema:
@@ -56,6 +57,7 @@ paths:
   /dictionnary/any/{query}:
     get:
       summary: Retrieves the definitions that match the query
+      operationId: fetchDefinition
       response:
         '200': 
         summary: An array of definitions
@@ -95,12 +97,11 @@ paths:
 
 
 components:
-  schemas:
-    Definition:
-      properties:
-        name:
-          type: string
-        definition:
-          type: string
+  Definition:
+    properties:
+      name:
+        type: string
+      definition:
+        type: string
 
 
