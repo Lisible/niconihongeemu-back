@@ -94,6 +94,49 @@ paths:
               items:
                 type: object
                 $ref: '#/components/schemas/Definition'
+  /deck:
+    get:
+      summary: Retrieves the user's decks
+      response:
+        '200':
+          summary: An array of decks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/components/schemas/Deck'
+    post:
+      summary: Creates a new deck
+      operationId: createDeck
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+      response:
+        '200':
+          description: 'Deck creation successful'
+        '409':
+          description: 'Already existing deck'
+        '400':
+          description: 'Invalid name'
+  /deck/{deckId}:
+    get:
+      summary: Retrieves the deck corresponding to the given id
+      operationId: fetchDeck
+      response:
+        '200':
+          summary: The deck corresponding to the given id
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Deck'
+
 
 
 components:
@@ -103,5 +146,11 @@ components:
         type: string
       definition:
         type: string
+  Deck:
+    properties:
+      name:
+        type: string
+      cardList:
+        type: array
 
 
