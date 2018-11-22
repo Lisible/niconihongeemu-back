@@ -63,10 +63,6 @@ paths:
       responses:
         '200': 
           description: An array of definitions
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/Definition"
   /dictionnary/word/{query}:
     get:
       summary: Retrieves the word definitions that match the query
@@ -76,10 +72,6 @@ paths:
       responses:
         '200':
           description: An array of definitions
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Definition'
   /dictionnary/kanji/{query}:
     get:
       summary: Retrieves the kanji meanings that match the query
@@ -89,10 +81,6 @@ paths:
       responses:
         '200':
           description: An array of definitions
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Definition'
   /deck:
     get:
       summary: Retrieves the user's decks
@@ -102,10 +90,6 @@ paths:
       responses:
         '200':
           description: An array of decks
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Deck'
     post:
       summary: Creates a new deck
       operationId: createDeck
@@ -127,6 +111,11 @@ paths:
     get:
       summary: Retrieves the deck corresponding to the given id
       operationId: fetchDeck
+      parameters:
+      - in: path
+        name: deckId
+        type: string
+        description: The id of the deck to retrieve
       tags:
         - deck
       responses:
@@ -134,6 +123,8 @@ paths:
           description: The deck corresponding to the given id
           schema:
             $ref: '#/definitions/Deck'
+        '403':
+          description: Not allowed to access this deck
         '404':
           description: Deck not found
     put:
@@ -142,6 +133,10 @@ paths:
       tags:
         - deck
       parameters:
+      - in: path
+        name: deckId
+        type: string
+        description: The id of the deck to retrieve
       - in: body
         name: deckMetadata
         required: true
@@ -150,10 +145,136 @@ paths:
       responses:
         '200':
           description: Modifies a deck's metadata
+        '403':
+          description: Not allowed to access this deck
         '404':
           description: Deck not found
-
-
+    delete:
+      summary: Deletes the deck with the given id
+      tags:
+        - deck
+      parameters:
+      - in: path
+        name: deckId
+        type: string
+        description: The id of the deck to retrieve
+      responses:
+        '200':
+          description: Deck successfully deleted
+        '403':
+          description: Not allowed to delete this deck
+        '404':
+          description: Deck not found
+  /deck/{deckId}/cards/:
+    get:
+      summary: Retrieves a deck's cards
+      operationId: getDeckCards
+      tags:
+        - deck
+      parameters:
+      - in: path
+        name: deckId
+        description: The id of the deck
+        type: string
+      responses:
+        '200':
+          description: Returns the cards of the deck
+        '403':
+          description: Not allowed to access this deck
+        '404':
+          description: Deck not found
+    post:
+      summary: Adds a card to a deck
+      operationId: insertCard
+      tags:
+        - deck
+      parameters:
+      - in: path
+        name: deckId
+        description: The id of the deck
+        type: string
+      - in: body
+        name: card
+        description: The card to add
+        schema:
+          $ref: '#/definitions/Card'
+      responses:
+        '200':
+          description: Card successfully added
+        '403':
+          description: Not allowed to access this deck
+        '404':
+          description: Deck not found
+  /deck/{deckId}/cards/{cardId}:
+    get:
+      summary: Returns the card with the given id
+      operationId: getDeckCard
+      tags:
+        - deck
+      parameters:
+      - in: path
+        name: deckId
+        description: The id of the deck
+        type: string
+      - in: path
+        name: cardId
+        description: The id of the card
+        type: string
+      responses:
+        '200':
+          description: Returns the card
+          schema:
+            $ref: '#/definitions/Card'
+        '403':
+          description: Not allowed to access this deck
+        '404':
+          description: Card not found
+    put:
+      summary: Edit the card with the given id
+      operationId: editDeckCard
+      tags:
+        - deck
+      parameters:
+      - in: path
+        name: deckId
+        description: The id of the deck
+        type: string
+      - in: path
+        name: cardId
+        description: The id of the card
+        type: string
+      - in: body
+        name: card
+        schema:
+          $ref: '#/definitions/Card'
+      responses:
+        '200':
+          description: Card successfully edited
+        '403':
+          description: Not allowed to access this deck
+        '404':
+          description: Card not found
+    delete:
+      summary: Delete the card with the given id
+      operationId: deleteDeckCard
+      tags:
+        - deck
+      parameters:
+      - in: path
+        name: deckId
+        description: The id of the deck
+        type: string
+      - in: path
+        name: cardId
+        description: The id of the card
+        type: string
+      responses:
+        '200':
+          description: Card successfully deleted
+        '403':
+          description: Not allowed to access this deck
+        '404':
+          description: Card not found
 
 definitions:
   Definition:
