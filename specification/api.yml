@@ -9,45 +9,45 @@ paths:
     get:
       summary: Returns an access token to the API
       operationId: getAccessToken
+      tags:
+        - authentication
       parameters:
-        - login: loginParam
+        - name: loginParam
           in: path
           required: true
-          description: Login of the user
+          summary: Login of the user
           schema:
             type: string
-        - pass: hashParam
+        - name: hashParam
           in: path
           required: true
-          description: Hashed password of the user
+          summary: Hashed password of the user
           schema:
             type: string
-      response:
+      responses:
         '200':
           description: The access token
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  access_token:
-                  type: string
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: string
         '401':
           description: Authentication failure
   /user:
     post:
       summary: Register a new user
       operationId: registerUser
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              login:
-                type: string
-              pass:
-                type: string
-      response:
+      tags:
+        - authentication
+      schema:
+        type: object
+        properties:
+          login:
+            type: string
+          pass:
+            type: string
+      responses:
         '200':
           description: 'Registration successful'
         '409':
@@ -58,66 +58,65 @@ paths:
     get:
       summary: Retrieves the definitions that match the query
       operationId: fetchDefinition
-      response:
+      tags:
+        - dictionnary
+      responses:
         '200': 
-        summary: An array of definitions
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                $ref: '#/components/schemas/Definition'
+          description: An array of definitions
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Definition"
   /dictionnary/word/{query}:
     get:
       summary: Retrieves the word definitions that match the query
-      response:
-        '200': 
-        summary: An array of definitions
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                $ref: '#/components/schemas/Definition' 
+      operationId: fetchWordDefinition
+      tags:
+        - dictionnary
+      responses:
+        '200':
+          description: An array of definitions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Definition'
   /dictionnary/kanji/{query}:
     get:
       summary: Retrieves the kanji meanings that match the query
-      response:
-        '200': 
-        summary: An array of definitions
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                $ref: '#/components/schemas/Definition'
+      operationId: fetchKanjiDefinition
+      tags:
+        - dictionnary
+      responses:
+        '200':
+          description: An array of definitions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Definition'
   /deck:
     get:
       summary: Retrieves the user's decks
-      response:
+      operationId: fetchDecks
+      tags:
+        - deck
+      responses:
         '200':
-          summary: An array of decks
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  $ref: '#/components/schemas/Deck'
+          description: An array of decks
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Deck'
     post:
       summary: Creates a new deck
       operationId: createDeck
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-      response:
+      tags:
+        - deck
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+      responses:
         '200':
           description: 'Deck creation successful'
         '409':
@@ -128,29 +127,58 @@ paths:
     get:
       summary: Retrieves the deck corresponding to the given id
       operationId: fetchDeck
-      response:
+      tags:
+        - deck
+      responses:
         '200':
-          summary: The deck corresponding to the given id
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: '#/components/schemas/Deck'
+          description: The deck corresponding to the given id
+          schema:
+            $ref: '#/definitions/Deck'
+        '404':
+          description: Deck not found
+    put:
+      summary: Modifies a deck's metadata
+      operationId: modifyDeck
+      tags:
+        - deck
+      parameters:
+      - in: body
+        name: deckMetadata
+        required: true
+        schema:
+          $ref: '#/definitions/DeckMetadata'
+      responses:
+        '200':
+          description: Modifies a deck's metadata
+        '404':
+          description: Deck not found
 
 
 
-components:
+definitions:
   Definition:
     properties:
       name:
         type: string
       definition:
         type: string
-  Deck:
+  DeckMetadata:
     properties:
       name:
         type: string
+  Deck:
+    properties:
+      metadata:
+        schema:
+          $ref: '#/definitions/DeckMetadata'
       cardList:
         type: array
-
+        items:
+          $ref: '#/definitions/Card'
+  Card:
+    properties:
+      front:
+        type: string
+      back:
+        type: string
 
