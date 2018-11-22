@@ -1,3 +1,4 @@
 specification/index.html
 specification/.swagger-codegen-ignore
 specification/.swagger-codegen/VERSION
+node_modules/
