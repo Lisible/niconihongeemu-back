@@ -8,3 +8,7 @@ let deckRouter = require('./routes/deck');
 app.use('/authentication', authenticationRouter)
 app.use('/dictionnary', dictionnaryRouter);
 app.use('/deck', deckRouter);
+
+app.listen(3000, function(){
+  console.log('NicoNihonGeemu backend started on port 3000');
+});
