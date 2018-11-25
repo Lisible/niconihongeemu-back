@@ -7,7 +7,8 @@ router.get('/any/:query', function(req, res){
     const ANY_TARGET = 'https://api.nihongoresources.com/dict/find/' + req.params.query;
     fetch(ANY_TARGET)
     .then(response => response.json())
-    .then(response => res.send(response));
+    .then(response => res.send(response))
+    .catch(err => console.log(err));
     
 });
 
@@ -15,17 +16,19 @@ router.get('/kanji/:query', function(req, res){
 	const KANJI_TARGET = "https://api.nihongoresources.com/kanji/find/" + req.params.query;
 	fetch(KANJI_TARGET)
 	.then(response => response.json())
-	.then(response => res.send(response));
+	.then(response => res.send(response))
+    .catch(err => console.log(err));
 });
 
 router.get('/word/:query', function(req, res){
-    const ANY_TARGET = 'https://api.nihongoresources.com/dict/find/' + req.params.query;
+    const ANY_TARGET = 'https://api.nihongoresources.com/dict/find/' + encodeURIComponent(req.params.query);
     fetch(ANY_TARGET)
     .then(response => response.json())
     .then(response => {
         let wordDefinitions = parseWordResponse(response);
         res.send(wordDefinitions);
-    });
+    })
+    .catch(err => console.log(err));
 });
 
 
@@ -38,11 +41,11 @@ function parseWordResponse(response) {
                 accum = accum.concat(curr.gloss)
                 return accum;
             }, []);
-        }
 
-        definitions.push(new Word(r.keb,
+            definitions.push(new Word(r.keb,
                                 r.reb,
                                 meanings));
+        }
     });
 
     return definitions;
