@@ -1,6 +1,7 @@
 let express = require('express');
 let fetch = require('node-fetch');
 let Word = require('../models/word');
+let Kanji = require('../models/kanji');
 let router = express.Router();
 
 router.get('/any/:query', function(req, res){
@@ -16,7 +17,10 @@ router.get('/kanji/:query', function(req, res){
 	const KANJI_TARGET = "https://api.nihongoresources.com/kanji/find/" + req.params.query;
 	fetch(KANJI_TARGET)
 	.then(response => response.json())
-	.then(response => res.send(response))
+	.then(response => {
+        let kanjiList = parseKanjiResponse(response);
+        res.send(kanjiList);
+    })
     .catch(err => console.log(err));
 });
 
@@ -49,6 +53,22 @@ function parseWordResponse(response) {
     });
 
     return definitions;
+}
+
+function parseKanjiResponse(response) {
+    let kanjiList = [];
+
+    response.forEach(r => {
+        if(r.literal != undefined){
+            if(r.jlpt != undefined){
+                jlptLevel =  r.jlpt;
+            }
+            else jlptLevel = null;
+            kanjiList.push(new Kanji(r.literal, r.readings, r.meanings, r.strokeCount, jlptLevel));
+        }
+    })
+
+    return kanjiList;
 }
 
 module.exports = router;
