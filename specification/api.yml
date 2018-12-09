@@ -283,15 +283,10 @@ definitions:
         type: string
       definition:
         type: string
-  DeckMetadata:
+  Deck:
     properties:
       name:
         type: string
-  Deck:
-    properties:
-      metadata:
-        schema:
-          $ref: '#/definitions/DeckMetadata'
       cardList:
         type: array
         items:

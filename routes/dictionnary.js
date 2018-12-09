@@ -1,8 +1,9 @@
-let express = require('express');
-let fetch = require('node-fetch');
-let Word = require('../models/word');
-let Kanji = require('../models/kanji');
-let router = express.Router();
+const express = require('express');
+const fetch = require('node-fetch');
+const wanakana = require('wanakana');
+const Word = require('../models/word');
+const Kanji = require('../models/kanji');
+const router = express.Router();
 
 router.get('/any/:query', function(req, res){
     const ANY_TARGET = 'https://api.nihongoresources.com/dict/find/' + req.params.query;
@@ -46,9 +47,12 @@ function parseWordResponse(response) {
                 return accum;
             }, []);
 
+            romajiWritings = r.reb.map(w => wanakana.toRomaji(w));
+
             definitions.push(new Word(r.keb,
-                                r.reb,
-                                meanings));
+                                    r.reb,
+                                    romajiWritings,
+                                    meanings));
         }
     });
 
