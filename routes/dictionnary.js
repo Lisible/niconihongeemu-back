@@ -68,7 +68,8 @@ function parseKanjiResponse(response) {
                 jlptLevel =  r.jlpt;
             }
             else jlptLevel = null;
-            kanjiList.push(new Kanji(r.literal, r.readings, r.meanings, r.strokeCount, jlptLevel));
+            romaji = r.readings.map(w => wanakana.toRomaji(w));
+            kanjiList.push(new Kanji(r.literal, r.readings, r.meanings, romaji, r.strokeCount, jlptLevel));
         }
     })
 
