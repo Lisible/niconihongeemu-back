@@ -14,6 +14,13 @@ app.use('/authentication', authenticationRouter)
 app.use('/dictionnary', dictionnaryRouter);
 app.use('/deck', deckRouter);
 
+setup();
+
 app.listen(3000, function(){
   console.log('NicoNihonGeemu backend started on port 3000');
 });
+
+function setup() {
+	const config = require('./config.json');
+	require('./models/Database').initialize(config.mongodb_url, config.mongodb_database);
+}

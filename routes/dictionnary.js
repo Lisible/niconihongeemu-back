@@ -1,8 +1,8 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const wanakana = require('wanakana');
-const Word = require('../models/word');
-const Kanji = require('../models/kanji');
+const Word = require('../models/Word');
+const Kanji = require('../models/Kanji');
 const router = express.Router();
 
 router.get('/any/:query', function(req, res){
