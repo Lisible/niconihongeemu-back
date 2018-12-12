@@ -43,6 +43,13 @@ class Database {
 		return collection.insertOne(document)
 	}
 
+	async findDocumentsByValue(collectionName, propertyName, propertyValue) {
+		let queryObject = {};
+		queryObject[propertyName] = propertyValue;
+
+		return this.db.collection(collectionName).find(queryObject).toArray();
+	}
+
 	async _connect() {
 		const client = await MongoClient.connect(this.url, {
 			useNewUrlParser: true

@@ -1,8 +1,8 @@
 const express = require('express');
 const fetch = require('node-fetch');
-const wanakana = require('wanakana');
 const Word = require('../models/Word');
 const Kanji = require('../models/Kanji');
+const KanaUtils = require('../utils/KanaUtils');
 const router = express.Router();
 
 router.get('/any/:query', function(req, res){
@@ -47,8 +47,7 @@ function parseWordResponse(response) {
                 return accum;
             }, []);
 
-            romajiWritings = r.reb.map(w => wanakana.toRomaji(w));
-
+            romajiWritings = r.reb.map(w => KanaUtils.toRomaji(w));
             definitions.push(new Word(r.keb,
                                     r.reb,
                                     romajiWritings,
@@ -68,7 +67,7 @@ function parseKanjiResponse(response) {
                 jlptLevel =  r.jlpt;
             }
             else jlptLevel = null;
-            romaji = r.readings.map(w => wanakana.toRomaji(w));
+            romaji = r.readings.map(w => KanaUtils.toRomaji(w));
             kanjiList.push(new Kanji(r.literal, r.readings, r.meanings, romaji, r.strokeCount, jlptLevel));
         }
     })

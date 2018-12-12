@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Lisible/niconihongeemu-back#readme",
   "dependencies": {
+    "argon2": "^0.20.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
