@@ -28,9 +28,14 @@ router.post('/accessToken', async function(req, res){
 
 router.post('/user', async function(req, res){
     const user = new User(null, req.body.login, req.body.password);
-    await (new UserDAO()).createUser(user);
 
-	res.status(200).send();
+    try {
+    	await (new UserDAO()).createUser(user);
+		res.status(200).send();
+    } catch(err) {
+    	res.status(err.code).send(err);
+    }
+
 });
 
 module.exports = router;
