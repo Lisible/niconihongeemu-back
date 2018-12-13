@@ -29,7 +29,7 @@ class UserDAO {
 	async verifyPasswordHash(login, password) {
 		const user = await this.getUser(login);
 		if(user === undefined) 
-			throw new Exception(404, "User doesn't exists");
+			throw new Exception(404, "User doesn't exist");
 
 		if(!await PasswordUtils.verify(user.passwordHash, password))
 			throw new Exception(401, "Authentication failed");
