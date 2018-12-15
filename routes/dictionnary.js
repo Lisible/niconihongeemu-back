@@ -5,6 +5,12 @@ const Kanji = require('../models/Kanji');
 const KanaUtils = require('../utils/KanaUtils');
 const router = express.Router();
 
+const PasswordUtils = require('../utils/PasswordUtils');
+const SessionUtils = require('../utils/SessionUtils');
+
+
+router.use(PasswordUtils.authentificationCheck);
+router.use(SessionUtils.refresh);
 router.get('/any/:query', function(req, res){
     const ANY_TARGET = 'https://api.nihongoresources.com/dict/find/' + req.params.query;
     fetch(ANY_TARGET)

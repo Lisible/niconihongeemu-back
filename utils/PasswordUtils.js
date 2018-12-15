@@ -1,4 +1,6 @@
 const argon2 = require('argon2');
+const Exception = require('../models/Exception');
+const TokenStore = require('../models/TokenStore');
 
 module.exports = {
 	/**
@@ -26,5 +28,17 @@ module.exports = {
 	 */
 	generateToken: function() {
 		return Math.random().toString(36).substr(2);
+	},
+
+	/**
+	 * Checks the authentification
+	 */
+	authentificationCheck: function(req, res, next) {
+	    if(!TokenStore.checkToken(req.query.access_token)){
+	        res.send(new Exception(403, "Unauthentified request"))
+	        return;
+	    }
+
+	    next();
 	}
 }

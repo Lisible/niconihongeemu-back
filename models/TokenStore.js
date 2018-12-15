@@ -1,4 +1,4 @@
-const TIMEOUT_DELAY = 1000;
+const TIMEOUT_DELAY = 300000;
 
 class TokenStore {
 	constructor() {
