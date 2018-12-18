@@ -66,6 +66,19 @@ class Database {
 
 		return count !== 0;
 	}
+
+	async deleteDocumentWithId(collectionName, id) {
+		const collection = this.db.collection(collectionName);
+		return collection.deleteOne( { "id" : id } );
+	}
+
+	async updateDocumentName(collectionName, id, name) {
+		const collection = this.db.collection(collectionName);
+		collection.updateOne(
+      		{ "id" : id },
+      		{ $set: { "name" : name } },
+		);
+	}
 }
 
 module.exports = new Database();

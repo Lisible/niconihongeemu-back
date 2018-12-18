@@ -13,6 +13,14 @@ class DeckDAO {
 	async fetchDeck(id) {
 		return await db.findDocumentsByValue('deck', 'id', id);
 	}
+
+	async deleteDeck(id) {
+		await db.deleteDocumentWithId('deck', id);
+	}
+
+	async modifyDeckName(id, name) {
+		await db.updateDocumentName('deck', id, name);
+	}
 }
 
 module.exports = DeckDAO;

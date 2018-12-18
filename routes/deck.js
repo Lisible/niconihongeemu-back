@@ -33,4 +33,16 @@ router.get('/:id', async (req, res) => {
 	res.send(deck);
 });
 
+router.delete('/:id', async (req, res) => {
+	await (new DeckDAO()).deleteDeck(req.params.id);
+	res.status(200);
+	res.send();
+});
+
+router.put('/:id', async (req, res) => {
+	await (new DeckDAO()).modifyDeckName(req.params.id, req.body.name);
+	res.status(200);
+	res.send();
+});
+
 module.exports = router;

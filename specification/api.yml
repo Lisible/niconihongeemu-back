@@ -151,6 +151,7 @@ paths:
           description: Deck not found
     delete:
       summary: Deletes the deck with the given id
+      operationId: deleteDeck
       tags:
         - deck
       parameters:
