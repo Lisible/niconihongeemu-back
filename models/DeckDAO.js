@@ -5,6 +5,10 @@ class DeckDAO {
 	async insertDeck(deck) {
 		await db.insertDocument('deck', deck);
 	}
+
+	async fetchUserDecks(login) {
+		return await db.findDocumentsByValue('deck', 'login', login);
+	}
 }
 
 module.exports = DeckDAO;

@@ -10,7 +10,7 @@ class Deck {
      * @param cardList The list of cards of the deck
      *                 If not specified: the card list of the deck will be empty
      */
-    constructor(id, name, cardList) {
+    constructor(id, name, cardList, login) {
         this.id = id;
         this.name = name;
 
@@ -18,6 +18,7 @@ class Deck {
             this.cardList = cardList;
         else
             this.cardList = [];
+        this.login = login;
     }
 
     /**
@@ -40,6 +41,10 @@ class Deck {
      */
     getCardList() {
         return this.cardList;
+    }
+
+    getLogin() {
+        return this.login;
     }
 }
 

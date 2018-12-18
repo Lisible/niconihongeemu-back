@@ -27,7 +27,7 @@ router.post('/accessToken', async function(req, res){
 });
 
 router.post('/user', async function(req, res){
-    const user = new User(null, req.body.login, req.body.password);
+    const user = new User(req.body.login, req.body.password);
 
     try {
     	await (new UserDAO()).createUser(user);
