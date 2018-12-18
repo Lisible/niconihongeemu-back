@@ -27,4 +27,10 @@ router.get('/', async (req, res) => {
 	res.send(decks);
 });
 
+router.get('/:id', async (req, res) => {
+	const deck = await (new DeckDAO()).fetchDeck(req.params.id);
+	res.status(200);
+	res.send(deck);
+});
+
 module.exports = router;

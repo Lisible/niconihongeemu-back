@@ -9,6 +9,10 @@ class DeckDAO {
 	async fetchUserDecks(login) {
 		return await db.findDocumentsByValue('deck', 'login', login);
 	}
+
+	async fetchDeck(id) {
+		return await db.findDocumentsByValue('deck', 'id', id);
+	}
 }
 
 module.exports = DeckDAO;
