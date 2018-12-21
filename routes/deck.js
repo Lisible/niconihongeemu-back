@@ -5,7 +5,6 @@ const DeckDAO = require('../models/DeckDAO');
 const Deck = require('../models/Deck');
 const TokenStore = require('../models/TokenStore');
 
-const CardDAO = require('../models/CardDAO');
 const Card = require('../models/Card');
 
 const PasswordUtils = require('../utils/PasswordUtils');
