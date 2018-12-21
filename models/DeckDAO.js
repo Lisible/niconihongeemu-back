@@ -39,6 +39,27 @@ class DeckDAO {
 		cardList.push(card);
 		await db.updateDocumentCardList('deck', id, cardList);
 	}
+
+	async deleteCardFromDeck(idDeck, idCard){
+		const deck = this.parseDeckJSON(await db.findDocumentByValue('deck', 'id', idDeck));
+		let cardList = deck.getCardList();
+		cardList = cardList.filter(c => {
+			return c.id !== idCard;
+		});
+		await db.updateDocumentCardList('deck', idDeck, cardList);
+	}
+
+	async updateCard(idDeck, idCard, front, back){
+		const deck = this.parseDeckJSON(await db.findDocumentByValue('deck', 'id', idDeck));
+		let cardList = deck.getCardList();
+		cardList.forEach(c => {
+			if(c.id === idCard){
+				c.front = front;
+				c.back = back;
+			}
+		});
+		await db.updateDocumentCardList('deck', idDeck, cardList);
+	}
 }
 
 module.exports = DeckDAO;

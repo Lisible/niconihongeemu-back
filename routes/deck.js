@@ -72,4 +72,16 @@ router.post('/:id/cards', async (req, res) => {
 	res.send();
 });
 
+router.delete('/:idD/cards/:idC', async (req, res) => {
+	await (new DeckDAO()).deleteCardFromDeck(req.params.idD, req.params.idC);
+	res.status(200);
+	res.send();
+});
+
+router.put('/:idD/cards/:idC', async (req, res) => {
+	await (new DeckDAO()).updateCard(req.params.idD, req.params.idC, req.body.front, req.body.back);
+	res.status(200);
+	res.send();
+});
+
 module.exports = router;
