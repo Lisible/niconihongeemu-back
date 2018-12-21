@@ -21,7 +21,7 @@ router.get('/any/:query', function(req, res){
 });
 
 router.get('/kanji/:query', function(req, res){
-	const KANJI_TARGET = "https://api.nihongoresources.com/kanji/find/" + req.params.query;
+	const KANJI_TARGET = "https://api.nihongoresources.com/kanji/find/" + encodeURIComponent(req.params.query);
 	fetch(KANJI_TARGET)
 	.then(response => response.json())
 	.then(response => {
