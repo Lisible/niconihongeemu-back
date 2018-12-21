@@ -50,6 +50,11 @@ class Database {
 		return this.db.collection(collectionName).find(queryObject).toArray();
 	}
 
+	async findDocumentByValue(collectionName, propertyName, propertyValue) {
+		const documents = await this.findDocumentsByValue(collectionName, propertyName, propertyValue);
+		return documents[0];
+	}
+
 	async _connect() {
 		const client = await MongoClient.connect(this.url, {
 			useNewUrlParser: true
@@ -76,7 +81,15 @@ class Database {
 		const collection = this.db.collection(collectionName);
 		collection.updateOne(
       		{ "id" : id },
-      		{ $set: { "name" : name } },
+      		{ $set: {"name" : name } },
+		);
+	}
+
+	async updateDocumentCardList(collectionName, id, cardList) {
+		const collection = this.db.collection(collectionName);
+		collection.updateOne(
+      		{ "id" : id },
+      		{ $set: { "cardList" : cardList } },
 		);
 	}
 }
