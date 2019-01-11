@@ -31,7 +31,7 @@ class DeckDAO {
 			throw new Exception(403, "Deck access not allowed");
 		}
 
-		return d;
+		return deck;
 	}
 
 	async deleteDeck(id, login) {
