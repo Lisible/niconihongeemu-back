@@ -64,11 +64,10 @@ router.get('/:idD/cards/:idC', async (req, res) => {
 });
 
 router.post('/:id/cards', async (req, res) => {
-	let card = new Card(null, req.body.front, req.body.back);
-	await (new DeckDAO()).insertCardInDeck(req.params.id, card);
-
+	const card = await (new DeckDAO()).insertCardInDeck(req.params.id, 
+														new Card(null, req.body.front, req.body.back));
 	res.status(200);
-	res.send();
+	res.send(card);
 });
 
 router.delete('/:idD/cards/:idC', async (req, res) => {
@@ -78,7 +77,7 @@ router.delete('/:idD/cards/:idC', async (req, res) => {
 });
 
 router.put('/:idD/cards/:idC', async (req, res) => {
-	await (new DeckDAO()).updateCard(req.params.idD, req.params.idC, req.body.front, req.body.back);
+	await (new DeckDAO()).updateCard(req.params.idD, req.params.idC, req.body.front, req.body.back, req.body.nextRevisionDate, req.body.streak);
 	res.status(200);
 	res.send();
 });

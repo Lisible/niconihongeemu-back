@@ -38,6 +38,7 @@ class DeckDAO {
 		let cardList = deck.getCardList();
 		cardList.push(card);
 		await db.updateDocumentCardList('deck', id, cardList);
+		return card;
 	}
 
 	async deleteCardFromDeck(idDeck, idCard){
@@ -49,13 +50,15 @@ class DeckDAO {
 		await db.updateDocumentCardList('deck', idDeck, cardList);
 	}
 
-	async updateCard(idDeck, idCard, front, back){
+	async updateCard(idDeck, idCard, front, back, nextRevisionDate, streak){
 		const deck = this.parseDeckJSON(await db.findDocumentByValue('deck', 'id', idDeck));
 		let cardList = deck.getCardList();
 		cardList.forEach(c => {
 			if(c.id === idCard){
 				c.front = front;
 				c.back = back;
+				c.nextRevisionDate = nextRevisionDate;
+				c.streak = streak;
 			}
 		});
 		await db.updateDocumentCardList('deck', idDeck, cardList);
