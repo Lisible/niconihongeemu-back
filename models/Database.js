@@ -31,6 +31,7 @@ class Database {
 	 * Inserts a document in the database
 	 * @param collectionName The name of the collection to insert the document into
 	 * @param document The document to insert
+	 * @return The identifier of the added document
 	 */
 	async insertDocument(collectionName, document) {
 		let id = DBUtils.generateId();
@@ -40,7 +41,8 @@ class Database {
 		document.id = id;
 
 		const collection = this.db.collection(collectionName);
-		return collection.insertOne(document)
+		collection.insertOne(document)
+		return id;
 	}
 
 	async findDocumentsByValue(collectionName, propertyName, propertyValue) {
