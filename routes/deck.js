@@ -9,15 +9,19 @@ const Card = require('../models/Card');
 
 const PasswordUtils = require('../utils/PasswordUtils');
 const SessionUtils = require('../utils/SessionUtils');
+const DBUtils = require('../utils/DBUtils');
 
 router.use(PasswordUtils.authentificationCheck);
 router.use(SessionUtils.refresh);
 router.post('/', async (req, res) => {
 	const login = TokenStore.getLoginFromToken(req.query.access_token);
-	const deck = new Deck(null, req.body.name, req.body.cardList, login);
+	const deck = new Deck(null, req.body.name, req.body.cardList.map(c => {
+		c.id = DBUtils.generateId();
+		return c;
+	}), login);
 	try {
-    	await (new DeckDAO()).insertDeck(deck);
-		res.status(200).send();
+    	const deckId = await (new DeckDAO()).insertDeck(deck);
+		res.status(200).send({id: deckId});
     } catch(err) {
     	res.status(err.code).send(err);
     }

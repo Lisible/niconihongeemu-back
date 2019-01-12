@@ -5,7 +5,7 @@ const Exception = require('../models/Exception');
 
 class DeckDAO {
 	async insertDeck(deck) {
-		if(!deck.name.match(/^[a-z0-9]+$/i)) {
+		if(!deck.name.match(/^([a-z0-9]|\s)+$/i)) {
 			throw new Exception(400, "Deck name must be alphanumeric");
 		}
 
@@ -15,7 +15,7 @@ class DeckDAO {
 			throw new Exception(409, "Deck name already used");
 		}
 
-		await db.insertDocument('deck', deck);
+		return await db.insertDocument('deck', deck);
 	}
 
 	async fetchUserDecks(login) {
