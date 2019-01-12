@@ -5,25 +5,28 @@ info:
   version: 0.1.0
 
 paths:
-  /accessToken?login="{loginParam}"&pass="{passParam}":
-    get:
+  /authentication/accessToken:
+    post:
       summary: Returns an access token to the API
       operationId: getAccessToken
       tags:
         - authentication
+      consumes:
+        - application/json
       parameters:
-        - name: loginParam
-          in: path
-          required: true
-          summary: Login of the user
+        - in: body
+          name: credentials
+          description: The credentials of the user who wants an access token
           schema:
-            type: string
-        - name: hashParam
-          in: path
-          required: true
-          summary: Hashed password of the user
-          schema:
-            type: string
+            type: object
+            required:
+              - login
+              - password
+            properties:
+              login:
+                type: string
+              password:
+                type: string
       responses:
         '200':
           description: The access token
@@ -33,27 +36,38 @@ paths:
               access_token:
                 type: string
         '401':
-          description: Authentication failure
-  /user:
+          description: Authentication failed
+        '404':
+          description: User doesn't exist
+  /authentication/user:
     post:
       summary: Register a new user
       operationId: registerUser
       tags:
         - authentication
-      schema:
-        type: object
-        properties:
-          login:
-            type: string
-          pass:
-            type: string
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: credentials
+          description: The credentials of the user to be created
+          schema:
+            type: object
+            required:
+              - login
+              - password
+            properties:
+              login:
+                type: string
+              password:
+                type: string
       responses:
         '200':
-          description: 'Registration successful'
+          description: Registration successful
         '409':
-          description: 'Already existing user'
+          description: Already existing user
         '400':
-          description: 'Invalid identifiers'
+          description: Invalid identifiers
   /dictionnary/any/{query}:
     get:
       summary: Retrieves the definitions that match the query
@@ -87,66 +101,111 @@ paths:
       operationId: fetchDecks
       tags:
         - deck
+      parameters:
+        - in: query
+          name: access_token
+          rquired: true
+          schema:
+            type: string
+          description: The access token of the user making the query
       responses:
         '200':
           description: An array of decks
+          schema:
+            $ref: '#/definitions/ArrayOfDecks'
     post:
       summary: Creates a new deck
       operationId: createDeck
       tags:
         - deck
-      schema:
-        type: object
-        properties:
-          name:
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: name
+          description: The name of the deck to be created
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+        - in: query
+          name: access_token
+          required: true
+          schema:
             type: string
+          description: The access token of the user making the query
       responses:
         '200':
-          description: 'Deck creation successful'
+          description: Deck creation successful
         '409':
-          description: 'Already existing deck'
+          description: Already existing deck
         '400':
-          description: 'Invalid name'
+          description: Invalid name
   /deck/{deckId}:
     get:
       summary: Retrieves the deck corresponding to the given id
       operationId: fetchDeck
+      tags:
+        - deck
       parameters:
       - in: path
         name: deckId
-        type: string
+        required: true
+        schema:
+          type: string
         description: The id of the deck to retrieve
-      tags:
-        - deck
+      - in: query
+        name: access_token
+        required: true
+        schema:
+          type: string
+        description: The access token of the user making the query
       responses:
         '200':
-          description: The deck corresponding to the given id
+          description: The deck corresponding to the given id deckId
           schema:
             $ref: '#/definitions/Deck'
         '403':
-          description: Not allowed to access this deck
+          description: Deck access not allowed
         '404':
           description: Deck not found
     put:
-      summary: Modifies a deck's metadata
-      operationId: modifyDeck
+      summary: Edits a deck's name
+      operationId: editDeck
       tags:
         - deck
+      consumes:
+        - application/json
       parameters:
-      - in: path
-        name: deckId
-        type: string
-        description: The id of the deck to retrieve
-      - in: body
-        name: deckMetadata
-        required: true
-        schema:
-          $ref: '#/definitions/DeckMetadata'
+        - in: body
+          name: name
+          description: The new name for the deck
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+        - in: path
+          name: deckId
+          required: true
+          type: string
+          description: The id of the deck to modify
+        - in: query
+          name: access_token
+          required: true
+          schema:
+            type: string
+          description: The access token of the user making the query
       responses:
         '200':
           description: Modifies a deck's metadata
         '403':
-          description: Not allowed to access this deck
+          description: Deck access not allowed
         '404':
           description: Deck not found
     delete:
@@ -157,13 +216,20 @@ paths:
       parameters:
       - in: path
         name: deckId
+        requied: true
         type: string
-        description: The id of the deck to retrieve
+        description: The id of the deck to delete
+      - in: query
+        name: access_token
+        required: true
+        schema:
+          type: string
+        description: The access token of the user making the query
       responses:
         '200':
           description: Deck successfully deleted
         '403':
-          description: Not allowed to delete this deck
+          description: Deck access not allowed
         '404':
           description: Deck not found
   /deck/{deckId}/cards/:
@@ -175,13 +241,22 @@ paths:
       parameters:
       - in: path
         name: deckId
+        required: true
         description: The id of the deck
         type: string
+      - in: query
+        name: access_token
+        required: true
+        schema:
+          type: string
+        description: The access token of the user making the query
       responses:
         '200':
-          description: Returns the cards of the deck
+          description: The array of cards of the deck
+          schema:
+            $ref: '#/definitions/ArrayOfCards'
         '403':
-          description: Not allowed to access this deck
+          description: Deck access not allowed
         '404':
           description: Deck not found
     post:
@@ -190,20 +265,34 @@ paths:
       tags:
         - deck
       parameters:
+      - in: body
+        name: cardValues
+        description: The front and back of the card to add to the deck
+        schema:
+          type: object
+          required:
+            - front
+            - back
+          properties:
+            front:
+              type: string
+            back:
+              type: string
+      - in: query
+        name: access_token
+        required: true
+        schema:
+          type: string
+        description: The access token of the user making the query
       - in: path
         name: deckId
         description: The id of the deck
         type: string
-      - in: body
-        name: card
-        description: The card to add
-        schema:
-          $ref: '#/definitions/Card'
       responses:
         '200':
           description: Card successfully added
         '403':
-          description: Not allowed to access this deck
+          description: Deck access not allowed
         '404':
           description: Deck not found
   /deck/{deckId}/cards/{cardId}:
@@ -221,21 +310,37 @@ paths:
         name: cardId
         description: The id of the card
         type: string
+      - in: query
+        name: access_token
+        required: true
+        schema:
+          type: string
+        description: The access token of the user making the query
       responses:
         '200':
           description: Returns the card
           schema:
             $ref: '#/definitions/Card'
         '403':
-          description: Not allowed to access this deck
+          description: Deck access not allowed
         '404':
-          description: Card not found
+          description: Deck or Card not found
     put:
-      summary: Edit the card with the given id
+      summary: Edits the card with the given id
       operationId: editDeckCard
       tags:
         - deck
       parameters:
+      - in: body
+        name: cardValues
+        description: The new front and/or back of the card
+        schema:
+          type: object
+          properties:
+            front:
+              type: string
+            back:
+              type: string
       - in: path
         name: deckId
         description: The id of the deck
@@ -244,17 +349,19 @@ paths:
         name: cardId
         description: The id of the card
         type: string
-      - in: body
-        name: card
+      - in: query
+        name: access_token
+        required: true
         schema:
-          $ref: '#/definitions/Card'
+          type: string
+        description: The access token of the user making the query
       responses:
         '200':
           description: Card successfully edited
         '403':
-          description: Not allowed to access this deck
+          description: Deck access not allowed
         '404':
-          description: Card not found
+          description: Deck or Card not found
     delete:
       summary: Delete the card with the given id
       operationId: deleteDeckCard
@@ -269,13 +376,19 @@ paths:
         name: cardId
         description: The id of the card
         type: string
+      - in: query
+        name: access_token
+        required: true
+        schema:
+          type: string
+        description: The access token of the user making the query
       responses:
         '200':
           description: Card successfully deleted
         '403':
-          description: Not allowed to access this deck
+          description: Deck access not allowed
         '404':
-          description: Card not found
+          description: Deck or Card not found
 
 definitions:
   Definition:
@@ -284,18 +397,32 @@ definitions:
         type: string
       definition:
         type: string
+  ArrayOfDecks:
+    type: array
+    items:
+      $ref: '#/definitions/Deck'
   Deck:
     properties:
+      id:
+        type: string
       name:
         type: string
       cardList:
-        type: array
-        items:
-          $ref: '#/definitions/Card'
+        $ref: '#/definitions/ArrayOfCards'
+  ArrayOfCards:
+    type: array
+    items:
+      $ref: '#/definitions/Card'
   Card:
     properties:
+      id:
+        type: string
       front:
         type: string
       back:
         type: string
+      nextRevisionDate:
+        type: integer
+      streak:
+        type: integer
 
