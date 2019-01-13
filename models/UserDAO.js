@@ -3,6 +3,10 @@ const PasswordUtils = require('../utils/PasswordUtils');
 const Exception = require('../models/Exception');
 
 class UserDAO {
+	/**
+	* Inserts a user into the database
+	* @param user The user to insert into the database
+	*/
 	async createUser(user) {
 		if(user.password.length < 6)
 			throw new Exception(400, "Password must be at least 6 characters long");
@@ -22,10 +26,20 @@ class UserDAO {
 		await db.insertDocument('user', user);
 	}
 
+	/**
+	* Return the user with a given login
+	* @param login The login of the user to retrieve
+	* @return The user with the given login
+	*/
 	async getUser(login) {
 		return (await db.findDocumentsByValue('user', 'login', login))[0];
 	}
 
+	/**
+	* Checks if the given password matches the given login in order to authenticate the user
+	* @param login The login of the user that wants to sign in
+	* @param password The password the user types
+	*/
 	async verifyPasswordHash(login, password) {
 		const user = await this.getUser(login);
 		if(user === undefined) 
