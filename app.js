@@ -22,5 +22,5 @@ app.listen(3000, function(){
 
 function setup() {
 	const config = require('./config.json');
-	require('./models/Database').initialize(config.mongodb_url, config.mongodb_database);
+	require('./models/Database').initialize(process.env.DB_URL, process.env.DB);
 }
