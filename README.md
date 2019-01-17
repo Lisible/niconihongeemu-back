@@ -21,3 +21,4 @@ To decouple the logic from the routes, several model classes have been created i
 - node
 - express.js
 - mongodb
+- wanakana: To convert kanas to romaji
