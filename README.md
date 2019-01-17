@@ -3,7 +3,7 @@ NodeJS backend for NicoNihonGeemu
 
 Start with ``npm start`` or ``node app.js``
 
-## Confiiguration
+## Configuration
 The NicoNihonGeemu backend requires an environment variable to be set in order to access the MongoDB database.
 - ``DB_URL``: The MongoDB URI with login/pass and database name matching this format: ``mongodb://<dbuser>:<dbpassword>@<domain>>/<dbname>``
 
